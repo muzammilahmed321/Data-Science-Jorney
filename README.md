@@ -16,6 +16,7 @@ A collection of Python notes, Data Science projects, Exploratory Data Analysis, 
 ![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C?style=for-the-badge)
 ![Seaborn](https://img.shields.io/badge/Seaborn-4C72B0?style=for-the-badge)
 ![Scikit Learn](https://img.shields.io/badge/Scikit--Learn-F7931E?style=for-the-badge&logo=scikitlearn&logoColor=white)
+![XGBoost](https://img.shields.io/badge/XGBoost-016853?style=for-the-badge)
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
 ![Jupyter](https://img.shields.io/badge/Jupyter-F37626?style=for-the-badge&logo=jupyter&logoColor=white)
 
@@ -36,7 +37,7 @@ This repository documents my continuous learning journey in **Python**, **Data S
 
 Rather than showcasing only completed work, this repository reflects my growth as a Computer Science student. Every notebook, dataset, visualization, and project represents another milestone in my learning journey.
 
-From writing my first Python programs to building Machine Learning models — and now deploying them as interactive web apps — this repository continues to grow as I explore new technologies and solve real-world problems.
+From writing my first Python programs to building Machine Learning models — tuning them, combining them into ensembles, and exploring unsupervised patterns — and now deploying models as interactive web apps — this repository continues to grow as I explore new technologies and solve real-world problems.
 
 > 🚀 **Learning never stops, and neither does this repository.**
 
@@ -75,7 +76,19 @@ From writing my first Python programs to building Machine Learning models — an
 🎯 Feature Selection
       │
       ▼
-🤖 Machine Learning
+🤖 Supervised Machine Learning (Regression & Classification)
+      │
+      ▼
+🎛 Model Tuning (Cross Validation, GridSearchCV, RandomizedSearchCV)
+      │
+      ▼
+🧩 Ensemble Learning (Bagging, Boosting, Stacking)
+      │
+      ▼
+🌀 Unsupervised Learning (Clustering — K-Means, DBSCAN)
+      │
+      ▼
+📉 Dimensionality Reduction (PCA)
       │
       ▼
 🌐 Model Deployment (Streamlit)
@@ -157,6 +170,128 @@ From writing my first Python programs to building Machine Learning models — an
 - Distribution Plot
 - Box Plot
 - Correlation Analysis
+
+---
+
+## 🎛 Model Tuning & Cross Validation
+
+Notes on why the first version of a model is never the best, and how to systematically improve it.
+
+- Hyperparameters vs. model parameters (`max_depth`, `n_neighbors`, `learning_rate`, etc.)
+- Cross Validation (train/test split limitations → K-Fold CV)
+- K-Fold Cross Validation walkthrough (K = 5, averaging accuracy across folds)
+- Bias–Variance behavior during tuning (overfitting vs. underfitting vs. generalized)
+- Hyperparameter search spaces for KNN, Decision Tree, SVM, Ridge/Lasso (`alpha`)
+- **Search methods:**
+  - Manual Search
+  - Grid Search CV
+  - Randomized Search CV
+- Comparing search-space size: Grid Search (exhaustive combinations) vs. Randomized Search (fixed number of random combinations) — illustrated with KNN and XGBoost parameter grids
+
+---
+
+## 🧩 Ensemble Learning
+
+Combining multiple "weak" models into one stronger predictor — notes + a hands-on notebook (`ensamble_learning.ipynb`) on the Iris dataset.
+
+### 📖 Concepts
+
+- Intuition: "wisdom of the crowd" — combining predictions from multiple models
+- Majority voting for classification, mean aggregation for regression
+- **Types of Ensemble Learning:**
+  - **Bagging** (Bootstrap Aggregation) → Random Forest
+  - **Boosting** → AdaBoost, Gradient Boosting, XGBoost
+  - **Stacking** → base models + a meta-model
+
+### 🌲 Bagging & Random Forest
+
+- Bootstrap sampling of the training data into subsets
+- Training independent models (e.g. multiple Decision Trees) in parallel on different subsets/feature splits
+- Aggregating predictions by voting/averaging
+- Bias–variance effect: reduces variance (fixes overfitting), keeps bias low → generalized model
+
+### 🚀 Boosting
+
+- Sequential training where each model learns from the previous model's errors
+- Weak learners combined with weights: `f = α₁(m₁) + α₂(m₂) + α₃(m₃) + ... + αₙ(mₙ)`
+- Bias–variance effect: reduces bias (fixes underfitting) → generalized model
+- Algorithms covered: **AdaBoost**, **Gradient Boosting**, **XGBoost**
+
+### 🧬 Stacking
+
+- Training multiple base models (e.g. SVM, Logistic Regression, Decision Tree) on the same data
+- Feeding their predictions as input features into a meta-model (e.g. KNN) that makes the final prediction
+- Train/test split strategy for base models vs. meta-model
+
+### 💻 Notebook Highlights (`ensamble_learning.ipynb`)
+
+- Dataset: Seaborn's built-in `iris` dataset
+- Label Encoding target classes
+- Models compared: `DecisionTreeClassifier`, `LogisticRegression`, `SVC`, `RandomForestClassifier`, `AdaBoostClassifier`, `GradientBoostingClassifier`, `XGBClassifier`
+- `StackingClassifier` built from multiple base estimators
+- Evaluation via `accuracy_score` and `classification_report`
+
+---
+
+## 🌀 Unsupervised Learning
+
+Notes + notebook (`UnSupervise_learning.ipynb`) on finding structure in unlabeled data.
+
+### 📖 Concepts
+
+- Supervised vs. Unsupervised Learning:
+
+| | Supervised | Unsupervised |
+|---|---|---|
+| Data | Inputs + labels (output available) | Only input data, no labels |
+| Goal | Learn label prediction | Learn patterns in data |
+| Tasks | Classification, Regression | Clustering, Dimensionality Reduction, Anomaly Detection |
+
+- Why use it: explore data structure, discover hidden patterns, reduce complexity, detect anomalies, preprocess for supervised models
+- Use cases: customer/market segmentation, fraud & anomaly detection, recommendation systems, image compression, medical patient grouping
+
+### 🎯 Clustering — K-Means
+
+- Steps: decide number of clusters (K) → initialize centroids → assign points via Euclidean distance → recompute/reassign centroids → repeat until convergence
+- Choosing K with the **Elbow Method** using **WCSS** (Within-Cluster Sum of Squares)
+- Limitations: must pre-specify K, sensitive to outliers, assumes roughly circular/convex clusters
+
+### 🌐 Clustering — DBSCAN
+
+- Density-based clustering (vs. K-Means' centroid-based approach) — non-parametric algorithm
+- Key parameter: **epsilon (ε) distance** for neighborhood density
+- Handles non-circular cluster shapes and detects outliers naturally, without pre-specifying K
+
+### 💻 Notebook Highlights (`UnSupervise_learning.ipynb`)
+
+- Synthetic data via `make_blobs` (and `make_moons` for non-convex shapes)
+- Feature scaling with `StandardScaler`
+- Clustering with `KMeans` from `sklearn.cluster`
+- Visualization of clusters with Matplotlib/Seaborn
+
+---
+
+## 📉 Dimensionality Reduction — PCA
+
+Notes + notebook (`PCADimensions.ipynb`) on reducing feature count while preserving information.
+
+### 📖 Concepts
+
+- The **Curse of Dimensionality**: high-dimensional data makes patterns hard to find, hurts distance-based algorithms (KNN, K-Means, DBSCAN), and increases storage & training time
+- Two approaches to dimensionality reduction:
+  - **Feature Selection** — keeping a subset of original features
+  - **Feature Extraction** — transforming/combining features into new ones (e.g. combining `engine width` + `engine height` → `engine size`)
+- **PCA (Principal Component Analysis)**:
+  - Finds new axes (principal components, PC1, PC2, ...) that capture maximum variance in the data
+  - Eigen Decomposition to identify the directions of maximum variance
+  - Some information is always lost, but enough is retained to still predict well
+  - Example reductions: 3D → 2D, 50D → 10D, 150D → 50D
+
+### 💻 Notebook Highlights (`PCADimensions.ipynb`)
+
+- Synthetic high-dimensional data via `make_blobs` (5 features, 3 centers)
+- Feature scaling with `StandardScaler` before PCA
+- Dimensionality reduction with `sklearn.decomposition.PCA` (`n_components=2`)
 
 ---
 
@@ -367,12 +502,13 @@ These are some visualizations generated during my exploratory data analysis.
 
 # 💻 Skills & Technologies
 
-| Programming | Data Analysis | Machine Learning | Deployment | Tools |
-|--------------|--------------|-----------------|------------|------|
-| 🐍 Python | 🐼 Pandas | 🤖 Scikit-Learn | 🌐 Streamlit | 📒 Jupyter Notebook |
-| 🏛 OOP | 📊 NumPy | 📈 Linear & Logistic Regression | 📦 Joblib (Model Serialization) | 🐙 GitHub |
-| 📝 File Handling | 📉 Matplotlib | 🎯 KNN, SVM, Naive Bayes, Decision Tree | | 🌳 Git |
-| ⚠ Error Handling | 🌊 Seaborn | 📊 Feature Engineering & Selection | | 💻 VS Code / PyCharm |
+| Programming | Data Analysis | Machine Learning | Advanced ML | Deployment | Tools |
+|--------------|--------------|-----------------|--------------|------------|------|
+| 🐍 Python | 🐼 Pandas | 🤖 Scikit-Learn | 🎛 Cross Validation & GridSearch/RandomizedSearch CV | 🌐 Streamlit | 📒 Jupyter Notebook |
+| 🏛 OOP | 📊 NumPy | 📈 Linear & Logistic Regression | 🧩 Ensemble Learning (Bagging, Boosting, Stacking) | 📦 Joblib (Model Serialization) | 🐙 GitHub |
+| 📝 File Handling | 📉 Matplotlib | 🎯 KNN, SVM, Naive Bayes, Decision Tree | 🌀 Clustering (K-Means, DBSCAN) | | 🌳 Git |
+| ⚠ Error Handling | 🌊 Seaborn | 📊 Feature Engineering & Selection | 📉 Dimensionality Reduction (PCA) | | 💻 VS Code / PyCharm |
+| | | | 🚀 XGBoost, Random Forest, AdaBoost, Gradient Boosting | | |
 
 ---
 
@@ -392,6 +528,10 @@ These are some visualizations generated during my exploratory data analysis.
 | 🎯 Feature Selection | ✅ Completed |
 | 🤖 Linear & Logistic Regression | ✅ Completed |
 | 📉 Classification Models (KNN, SVM, Naive Bayes, Decision Tree) | ✅ Completed |
+| 🎛 Model Tuning (Cross Validation, GridSearchCV, RandomizedSearchCV) | ✅ Completed |
+| 🧩 Ensemble Learning (Bagging, Boosting, Stacking, XGBoost) | ✅ Completed |
+| 🌀 Unsupervised Learning (K-Means, DBSCAN Clustering) | ✅ Completed |
+| 📉 Dimensionality Reduction (PCA) | ✅ Completed |
 | 🌐 Model Deployment (Streamlit) | ✅ Completed — Heart Stroke Prediction |
 | 🧠 Deep Learning | 🔜 Coming Soon |
 | 🤖 Artificial Intelligence | 🚀 Journey Continues |
